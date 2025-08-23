@@ -21,6 +21,8 @@ export function useTodos(): UseTodosReturn {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Using real authentication - no mock user needed
+
   /**
    * Fetch todos from database
    */

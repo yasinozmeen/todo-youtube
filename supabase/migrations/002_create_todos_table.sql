@@ -56,7 +56,6 @@ CREATE TRIGGER update_todos_updated_at
 
 -- Grant permissions to authenticated users
 GRANT ALL ON TABLE todos TO authenticated;
-GRANT USAGE ON SEQUENCE todos_id_seq TO authenticated;
 
 -- Comments for documentation
 COMMENT ON TABLE todos IS 'User todos with real-time synchronization support';

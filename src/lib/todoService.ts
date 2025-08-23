@@ -22,7 +22,7 @@ export class TodoService {
       throw new Error(`Failed to fetch todos: ${error.message}`)
     }
     
-    return data.map(this.mapRowToTodo)
+    return data.map(TodoService.mapRowToTodo)
   }
   
   /**
@@ -52,7 +52,7 @@ export class TodoService {
       throw new Error(`Failed to create todo: ${error.message}`)
     }
     
-    return this.mapRowToTodo(newTodo)
+    return TodoService.mapRowToTodo(newTodo)
   }
   
   /**
@@ -93,7 +93,7 @@ export class TodoService {
       throw new Error(`Failed to update todo: ${error.message}`)
     }
     
-    return this.mapRowToTodo(data)
+    return TodoService.mapRowToTodo(data)
   }
   
   /**
@@ -130,7 +130,7 @@ export class TodoService {
     }
     
     // Toggle the completion status
-    return this.updateTodo(userId, todoId, { 
+    return TodoService.updateTodo(userId, todoId, { 
       completed: !currentTodo.completed 
     })
   }

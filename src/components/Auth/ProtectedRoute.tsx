@@ -18,6 +18,8 @@ export default function ProtectedRoute({
   const { isAuthenticated, isLoading } = useAuth()
   const router = useRouter()
 
+  // Authentication bypass removed - using real auth
+
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       // Store the current path for redirect after login
