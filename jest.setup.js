@@ -20,12 +20,48 @@ jest.mock('@/lib/supabase', () => ({
     channel: jest.fn(() => ({
       on: jest.fn().mockReturnThis(),
       subscribe: jest.fn(),
+      unsubscribe: jest.fn(),
     })),
   },
   auth: {
     signUp: jest.fn(),
     signIn: jest.fn(),
     signOut: jest.fn(),
+  }
+}))
+
+// Mock todo service
+jest.mock('@/lib/todoService', () => ({
+  todoService: {
+    fetchTodos: jest.fn(() => Promise.resolve([])),
+    createTodo: jest.fn((userId, data) => Promise.resolve({
+      id: 'new-todo-id',
+      user_id: userId,
+      text: data.text,
+      completed: false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    })),
+    updateTodo: jest.fn((userId, todoId, updates) => Promise.resolve({
+      id: todoId,
+      user_id: userId,
+      text: 'Updated todo',
+      completed: updates.completed || false,
+      created_at: '2024-01-01T00:00:00Z',
+      updated_at: new Date().toISOString()
+    })),
+    deleteTodo: jest.fn(() => Promise.resolve()),
+    toggleTodo: jest.fn(() => Promise.resolve({
+      id: 'todo-1',
+      user_id: 'user-123',
+      text: 'Test todo',
+      completed: true,
+      created_at: '2024-01-01T00:00:00Z',
+      updated_at: new Date().toISOString()
+    })),
+    subscribeToTodos: jest.fn(() => ({
+      unsubscribe: jest.fn()
+    }))
   }
 }))
 
@@ -43,8 +79,11 @@ jest.mock('next/navigation', () => ({
 }))
 
 // Mock window.location
-delete window.location
-window.location = { origin: 'http://localhost:3000' } as any
+global.window = Object.create(window);
+global.window.location = {
+  origin: 'http://localhost:3000',
+  href: 'http://localhost:3000'
+};
 
 // Global test setup
 global.console = {

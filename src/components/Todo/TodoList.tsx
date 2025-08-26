@@ -30,7 +30,7 @@ const TodoItem = memo(({
   return (
     <div 
       className={`
-        group flex items-center gap-3 p-4 bg-white rounded-lg border border-gray-200
+        todo-item group flex items-center gap-3 p-4 bg-white rounded-lg border border-gray-200
         transition-all duration-200 ease-in-out
         hover:border-gray-300 hover:shadow-sm
         ${isOptimistic ? 'opacity-70' : ''}
@@ -40,43 +40,55 @@ const TodoItem = memo(({
       {/* Checkbox */}
       <button
         onClick={() => onToggle(todo.id)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            onToggle(todo.id)
+          }
+        }}
         disabled={isLoading}
         className={`
           flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center
-          transition-all duration-200 ease-in-out
+          transition-all duration-300 ease-in-out transform
           focus:outline-none focus:ring-2 focus:ring-blue-500/20
           disabled:opacity-50 disabled:cursor-not-allowed
+          hover:scale-105 active:scale-95
           ${todo.completed
-            ? 'bg-green-500 border-green-500 hover:bg-green-600'
-            : 'border-gray-300 hover:border-green-500'
+            ? 'bg-green-500 border-green-500 hover:bg-green-600 shadow-sm'
+            : 'border-gray-300 hover:border-green-500 hover:shadow-sm'
           }
         `}
         aria-label={todo.completed ? 'Mark as incomplete' : 'Mark as complete'}
+        role="checkbox"
+        aria-checked={todo.completed}
+        tabIndex={0}
       >
-        {todo.completed && (
-          <svg 
-            className="w-3 h-3 text-white" 
-            fill="currentColor" 
-            viewBox="0 0 20 20"
-            aria-hidden="true"
-          >
-            <path 
-              fillRule="evenodd" 
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" 
-              clipRule="evenodd" 
-            />
-          </svg>
-        )}
+        <svg 
+          className={`w-3 h-3 text-white transition-all duration-300 ease-in-out ${
+            todo.completed 
+              ? 'opacity-100 scale-100 rotate-0' 
+              : 'opacity-0 scale-50 rotate-180'
+          }`}
+          fill="currentColor" 
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+        >
+          <path 
+            fillRule="evenodd" 
+            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" 
+            clipRule="evenodd" 
+          />
+        </svg>
       </button>
 
       {/* Todo Text */}
       <div className="flex-1 min-w-0">
         <p 
           className={`
-            text-sm sm:text-base break-words transition-all duration-200
+            text-sm sm:text-base break-words transition-all duration-300 ease-in-out
             ${todo.completed 
-              ? 'text-gray-500 line-through' 
-              : 'text-gray-900'
+              ? 'text-gray-500 line-through opacity-75 transform scale-98' 
+              : 'text-gray-900 opacity-100 transform scale-100'
             }
           `}
         >
@@ -102,18 +114,29 @@ const TodoItem = memo(({
       {onDelete && (
         <button
           onClick={() => onDelete(todo.id)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              onDelete(todo.id)
+            }
+          }}
           disabled={isLoading}
           className={`
-            flex-shrink-0 p-1.5 rounded-md text-gray-400
-            opacity-0 group-hover:opacity-100 transition-all duration-200
-            hover:text-red-500 hover:bg-red-50
+            flex-shrink-0 min-w-[44px] min-h-[44px] p-2.5 rounded-md text-gray-400
+            flex items-center justify-center transition-all duration-200
+            opacity-0 group-hover:opacity-100 
+            hover:text-red-500 hover:bg-red-50 hover:scale-105
             focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:opacity-100
-            disabled:opacity-30 disabled:cursor-not-allowed
+            active:scale-95 active:bg-red-100
+            disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none
+            sm:opacity-0 sm:group-hover:opacity-100 opacity-100
           `}
-          aria-label="Delete todo"
+          aria-label={`Delete todo: ${todo.text}`}
+          title="Delete this todo"
+          tabIndex={0}
         >
           <svg 
-            className="w-4 h-4" 
+            className="w-5 h-5 sm:w-4 sm:h-4" 
             fill="none" 
             stroke="currentColor" 
             viewBox="0 0 24 24"
@@ -264,7 +287,7 @@ export default function TodoList({
       )}
 
       {/* Todo Items */}
-      <div className="space-y-2 sm:space-y-3">
+      <div className="todo-list space-y-2 sm:space-y-3">
         {todos.map((todo) => (
           <TodoItem
             key={todo.id}

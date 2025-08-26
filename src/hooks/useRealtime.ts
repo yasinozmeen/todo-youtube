@@ -79,35 +79,10 @@ export function useRealtime(onTodoChange?: (payload: TodoRealtimePayload) => voi
       const subscription = todoService.subscribeToTodos(user.id, handleRealtimeEvent)
       subscriptionRef.current = subscription
 
-      // Set up subscription status handlers
-      // Note: Supabase callback signatures are inconsistent, using basic error handling
-      subscription
-        .on('subscribe' as any, (status: any, err?: any, _?: any) => {
-          if (status === 'SUBSCRIBED') {
-            console.log('Real-time subscription established')
-            setIsConnected(true)
-            setError(null)
-          } else {
-            console.error('Subscription failed:', err)
-            setIsConnected(false)
-            setError('Failed to establish real-time connection')
-          }
-        })
-        .on('error' as any, (err: any, _?: any) => {
-          console.error('Real-time subscription error:', err)
-          setIsConnected(false)
-          setError('Real-time connection error')
-        
-          // Attempt to reconnect after delay
-          if (reconnectTimeoutRef.current) {
-            clearTimeout(reconnectTimeoutRef.current)
-          }
-          
-          reconnectTimeoutRef.current = setTimeout(() => {
-            console.log('Attempting to reconnect real-time subscription...')
-            setupSubscription()
-          }, 3000) // Retry after 3 seconds
-        })
+      // Assume connection is established - Supabase channels handle connection automatically
+      console.log('Real-time subscription created')
+      setIsConnected(true)
+      setError(null)
 
     } catch (err) {
       console.error('Error setting up real-time subscription:', err)

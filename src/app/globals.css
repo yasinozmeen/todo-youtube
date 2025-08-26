@@ -95,3 +95,57 @@
 .alert-info {
   @apply bg-blue-50 border-blue-200 text-blue-800;
 }
+
+/* Todo deletion animations */
+@keyframes fadeOutSlide {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+    max-height: 200px;
+  }
+  50% {
+    opacity: 0;
+    transform: translateX(20px);
+    max-height: 200px;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(20px);
+    max-height: 0;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.todo-item-deleting {
+  animation: fadeOutSlide 0.3s ease-out forwards;
+  pointer-events: none;
+}
+
+/* Todo item smooth transitions */
+.todo-item {
+  transition: all 0.2s ease-in-out;
+}
+
+.todo-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Smooth list reordering */
+.todo-list {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Delete button hover effects */
+.delete-btn-hover {
+  transition: all 0.15s ease-in-out;
+}
+
+.delete-btn-hover:hover {
+  transform: scale(1.1);
+}
+
+.delete-btn-hover:active {
+  transform: scale(0.95);
+}

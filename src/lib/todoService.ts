@@ -1,5 +1,6 @@
 import { supabase } from './supabase'
 import type { Todo, CreateTodoData, TodoRow, TodoInsert } from '@/types/todo'
+import type { Database } from '@/types/database'
 
 /**
  * Todo Service - Supabase database operations for todos
@@ -35,15 +36,15 @@ export class TodoService {
       throw new Error('Please enter a task')
     }
     
-    const todoInsert: TodoInsert = {
+    const todoInsert: Database['public']['Tables']['todos']['Insert'] = {
       user_id: userId,
       title: trimmedText, // Database uses 'title' field
       completed: false
     }
     
-    const { data: newTodo, error } = await supabase
+    const { data: newTodo, error } = await (supabase as any)
       .from('todos')
-      .insert(todoInsert as any)
+      .insert(todoInsert)
       .select()
       .single()
     
@@ -64,7 +65,7 @@ export class TodoService {
     updates: Partial<Pick<Todo, 'text' | 'completed'>>
   ): Promise<Todo> {
     // Map 'text' to 'title' for database
-    const dbUpdates: Partial<TodoRow> = {
+    const dbUpdates: Database['public']['Tables']['todos']['Update'] = {
       updated_at: new Date().toISOString()
     }
     
@@ -80,9 +81,9 @@ export class TodoService {
       dbUpdates.completed = updates.completed
     }
     
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('todos')
-      .update(dbUpdates as any)
+      .update(dbUpdates)
       .eq('id', todoId)
       .eq('user_id', userId) // Ensure user can only update their own todos
       .select()

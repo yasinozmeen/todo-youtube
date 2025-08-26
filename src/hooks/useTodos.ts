@@ -209,12 +209,17 @@ export function useTodos(): UseTodosReturn {
   }, [user?.id, todos])
 
   /**
-   * Toggle todo completion status
+   * Toggle todo completion status with rapid click protection
    */
   const toggleTodo = useCallback(async (id: string): Promise<TodoOperationResult> => {
     const todo = todos.find(t => t.id === id)
     if (!todo) {
       return { success: false, error: 'Todo not found' }
+    }
+
+    // Prevent rapid clicking by checking if todo is already being updated
+    if (todo.isLoading) {
+      return { success: false, error: 'Please wait for the current operation to complete' }
     }
 
     return updateTodo(id, { completed: !todo.completed })
