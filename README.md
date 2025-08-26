@@ -138,6 +138,19 @@ Hangi agent'ın kullanılacağından emin değilseniz:
 - **Performance Score**: 95/100
 - **Accessibility**: WCAG 2.1 AA compliant
 
+## 📺 Video Serisi
+
+Bu projenin geliştirilme süreci YouTube'da canlı olarak kaydedilmiştir:
+
+🎥 **[Claude Code ile Todo App Geliştirme - Video Playlist](https://www.youtube.com/playlist?list=PL3XNOLankzVctYKz5etdy2zf79J60LR7c)**
+
+Videolarda görecekleriniz:
+- Claude Code agent sisteminin gerçek zamanlı kullanımı
+- Product Manager → Business Analyst → Developer → QA workflow'u
+- Story-based development süreci
+- Test-driven development yaklaşımı
+- Real-time features implementasyonu
+
 ## 🔗 Kaynaklar
 
 - [Claude Code Dokümantasyonu](https://docs.anthropic.com/claude-code)
