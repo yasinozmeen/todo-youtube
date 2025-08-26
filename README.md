@@ -148,8 +148,6 @@ Videolarda görecekleriniz:
 - Claude Code agent sisteminin gerçek zamanlı kullanımı
 - Product Manager → Business Analyst → Developer → QA workflow'u
 - Story-based development süreci
-- Test-driven development yaklaşımı
-- Real-time features implementasyonu
 
 ## 🔗 Kaynaklar
 
