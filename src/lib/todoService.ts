@@ -43,7 +43,7 @@ export class TodoService {
     
     const { data: newTodo, error } = await supabase
       .from('todos')
-      .insert(todoInsert)
+      .insert(todoInsert as any)
       .select()
       .single()
     
@@ -82,7 +82,7 @@ export class TodoService {
     
     const { data, error } = await supabase
       .from('todos')
-      .update(dbUpdates)
+      .update(dbUpdates as any)
       .eq('id', todoId)
       .eq('user_id', userId) // Ensure user can only update their own todos
       .select()
@@ -131,7 +131,7 @@ export class TodoService {
     
     // Toggle the completion status
     return TodoService.updateTodo(userId, todoId, { 
-      completed: !currentTodo.completed 
+      completed: !(currentTodo as any).completed 
     })
   }
   

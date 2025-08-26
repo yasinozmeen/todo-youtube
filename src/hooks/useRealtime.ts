@@ -80,8 +80,9 @@ export function useRealtime(onTodoChange?: (payload: TodoRealtimePayload) => voi
       subscriptionRef.current = subscription
 
       // Set up subscription status handlers
+      // Note: Supabase callback signatures are inconsistent, using basic error handling
       subscription
-        .on('subscribe', (status, err) => {
+        .on('subscribe' as any, (status: any, err?: any, _?: any) => {
           if (status === 'SUBSCRIBED') {
             console.log('Real-time subscription established')
             setIsConnected(true)
@@ -92,11 +93,11 @@ export function useRealtime(onTodoChange?: (payload: TodoRealtimePayload) => voi
             setError('Failed to establish real-time connection')
           }
         })
-        .on('error', (err) => {
+        .on('error' as any, (err: any, _?: any) => {
           console.error('Real-time subscription error:', err)
           setIsConnected(false)
           setError('Real-time connection error')
-          
+        
           // Attempt to reconnect after delay
           if (reconnectTimeoutRef.current) {
             clearTimeout(reconnectTimeoutRef.current)
@@ -178,14 +179,30 @@ export function useTodosWithRealtime() {
         case 'INSERT':
           if (newTodo && !current.find(todo => todo.id === newTodo.id)) {
             // Add new todo to the beginning of the list (newest first)
-            return [newTodo, ...current]
+            const mappedTodo = {
+              id: newTodo.id,
+              user_id: newTodo.user_id,
+              text: newTodo.title, // Map database 'title' to app 'text'
+              completed: newTodo.completed,
+              created_at: newTodo.created_at,
+              updated_at: newTodo.updated_at
+            }
+            return [mappedTodo, ...current]
           }
           return current
 
         case 'UPDATE':
           if (newTodo) {
+            const mappedTodo = {
+              id: newTodo.id,
+              user_id: newTodo.user_id,
+              text: newTodo.title, // Map database 'title' to app 'text'
+              completed: newTodo.completed,
+              created_at: newTodo.created_at,
+              updated_at: newTodo.updated_at
+            }
             return current.map(todo => 
-              todo.id === newTodo.id ? newTodo : todo
+              todo.id === newTodo.id ? mappedTodo : todo
             )
           }
           return current

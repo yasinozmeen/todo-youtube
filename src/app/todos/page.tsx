@@ -30,7 +30,7 @@ export default function TodosPage() {
 
   // Set up real-time synchronization
   const { isConnected: isRealtimeConnected, error: realtimeError } = useRealtime(
-    useCallback((payload) => {
+    useCallback((payload: any) => {
       // Real-time updates are handled automatically by the subscription
       // We could add custom logic here if needed (e.g., notifications)
       console.log('Real-time update received:', payload.eventType)
