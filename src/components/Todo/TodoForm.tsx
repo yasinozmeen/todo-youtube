@@ -119,9 +119,9 @@ export default function TodoForm({ onAddTodo, isLoading = false, className = '' 
 
   return (
     <div className={`w-full ${className}`}>
-      {/* Input Form */}
-      <div className="flex gap-2 sm:gap-3">
-        {/* Text Input */}
+      {/* Input Form - Reference Design Match */}
+      <div className="flex gap-4">
+        {/* Text Input - Reference Design */}
         <div className="flex-1 relative">
           <input
             ref={inputRef}
@@ -132,15 +132,15 @@ export default function TodoForm({ onAddTodo, isLoading = false, className = '' 
             placeholder="Add new task"
             disabled={shouldShowLoading}
             className={`
-              w-full px-4 py-3 text-base
-              bg-white border-2 rounded-lg
-              placeholder-gray-400 text-gray-900
+              w-full px-4 py-4 text-base font-medium
+              bg-white border-b-2 border-gray-300 focus:border-gray-400
+              placeholder-gray-400 text-gray-700
               transition-all duration-200 ease-in-out
-              focus:outline-none focus:ring-2 focus:ring-blue-500/20
+              focus:outline-none 
               disabled:opacity-50 disabled:cursor-not-allowed
               ${error 
-                ? 'border-red-300 focus:border-red-500 bg-red-50' 
-                : 'border-gray-200 focus:border-blue-500 hover:border-gray-300'
+                ? 'border-b-red-400 focus:border-b-red-500 bg-red-50' 
+                : 'focus:border-b-gray-500'
               }
               ${shouldShowLoading ? 'pr-10' : ''}
             `}
@@ -156,25 +156,24 @@ export default function TodoForm({ onAddTodo, isLoading = false, className = '' 
           {/* Input loading spinner */}
           {shouldShowLoading && (
             <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-              <div className="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+              <div className="animate-spin h-5 w-5 border-2 border-gray-400 border-t-transparent rounded-full"></div>
             </div>
           )}
         </div>
 
-        {/* Add Button */}
+        {/* Add Button - Reference Design Circular + */}
         <button
           type="button"
           onClick={handleButtonClick}
           disabled={shouldShowLoading}
           className={`
-            px-4 py-3 rounded-lg font-medium text-base
-            min-w-[44px] h-[52px] flex items-center justify-center
+            w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center
             transition-all duration-200 ease-in-out
-            focus:outline-none focus:ring-2 focus:ring-blue-500/20
+            focus:outline-none focus:ring-2 focus:ring-gray-400/20
             disabled:opacity-50 disabled:cursor-not-allowed
             ${shouldShowLoading
-              ? 'bg-blue-400 text-white cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white hover:shadow-lg'
+              ? 'bg-gray-400 text-white cursor-not-allowed'
+              : 'bg-gray-600 hover:bg-gray-700 active:bg-gray-800 text-white hover:shadow-lg transform hover:scale-105 active:scale-95'
             }
           `}
           aria-label="Add todo"
@@ -183,16 +182,16 @@ export default function TodoForm({ onAddTodo, isLoading = false, className = '' 
             <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
           ) : (
             <svg 
-              className="h-6 w-6" 
+              className="h-6 w-6 font-bold" 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"
+              strokeWidth={3}
               aria-hidden="true"
             >
               <path 
                 strokeLinecap="round" 
                 strokeLinejoin="round" 
-                strokeWidth={2} 
                 d="M12 6v6m0 0v6m0-6h6m-6 0H6" 
               />
             </svg>

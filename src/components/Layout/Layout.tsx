@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Header from './Header'
+import ErrorBoundary from '../ErrorBoundary'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -19,17 +20,19 @@ export default function Layout({
   className = '' 
 }: LayoutProps) {
   return (
-    <div className={`min-h-screen bg-gray-50 ${className}`}>
-      {showHeader && (
-        <Header 
-          title={title} 
-          showUserInfo={showUserInfo}
-        />
-      )}
-      
-      <main className="flex-1">
-        {children}
-      </main>
-    </div>
+    <ErrorBoundary>
+      <div className={`min-h-screen bg-gray-50 ${className}`}>
+        {showHeader && (
+          <Header 
+            title={title} 
+            showUserInfo={showUserInfo}
+          />
+        )}
+        
+        <main className="flex-1">
+          {children}
+        </main>
+      </div>
+    </ErrorBoundary>
   )
 }

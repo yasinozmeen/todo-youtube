@@ -1,12 +1,15 @@
 'use client'
 
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import ProtectedRoute from '@/components/Auth/ProtectedRoute'
 import Layout from '@/components/Layout/Layout'
 import TodoForm from '@/components/Todo/TodoForm'
 import TodoList from '@/components/Todo/TodoList'
+import { ToastContainer } from '@/components/UI/Toast'
 import { useTodos } from '@/hooks/useTodos'
 import { useRealtime } from '@/hooks/useRealtime'
+import { useToast } from '@/hooks/useToast'
+import { useNetworkStatus } from '@/hooks/useNetworkStatus'
 
 /**
  * TodosPage - Main todo application page
@@ -28,14 +31,32 @@ export default function TodosPage() {
     refetch
   } = useTodos()
 
+  // Toast notifications
+  const { toasts, removeToast, error: showError, success: showSuccess, offline, online } = useToast()
+
+  // Network status monitoring
+  const { isOnline, isSlowConnection, isReconnecting } = useNetworkStatus()
+
   // Set up real-time synchronization
   const { isConnected: isRealtimeConnected, error: realtimeError } = useRealtime(
     useCallback((payload: any) => {
       // Real-time updates are handled automatically by the subscription
-      // We could add custom logic here if needed (e.g., notifications)
       console.log('Real-time update received:', payload.eventType)
-    }, [])
+      
+      // Show success notification for external updates
+      if (payload.eventType === 'INSERT' && payload.new) {
+        showSuccess('New todo synced from another device')
+      }
+    }, [showSuccess])
   )
+
+  // Handle network status changes - only show offline toast
+  useEffect(() => {
+    if (!isOnline) {
+      offline()
+    } 
+    // Don't show online toast immediately to avoid loops
+  }, [isOnline, offline])
 
   /**
    * Handle todo toggle (completion status) with enhanced error handling
@@ -51,10 +72,10 @@ export default function TodosPage() {
         return
       }
       
-      // For network/database errors, we could show a toast notification
-      // For now, the error is logged and the optimistic update will be rolled back
+      // Show error toast for network/database errors
+      showError('Failed to update todo. Please try again.')
     }
-  }, [toggleTodo])
+  }, [toggleTodo, showError])
 
   /**
    * Handle todo deletion with enhanced error handling
@@ -64,11 +85,13 @@ export default function TodosPage() {
     if (!result.success) {
       console.error('Failed to delete todo:', result.error)
       
-      // For network/database errors, we could show a toast notification
-      // The optimistic update will be rolled back automatically
-      // For now, errors are handled gracefully by the useTodos hook
+      // Show error toast for network/database errors
+      showError('Failed to delete todo. Please try again.')
+    } else {
+      // Show success message for successful deletion
+      showSuccess('Todo deleted successfully')
     }
-  }, [deleteTodo])
+  }, [deleteTodo, showError, showSuccess])
 
   /**
    * Handle delete retry for specific todo
@@ -87,108 +110,93 @@ export default function TodosPage() {
 
   return (
     <ProtectedRoute>
-      <Layout title="My Todos">
-        <div className="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          {/* Header with Real-time Status */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  My Todos
-                </h1>
-                <p className="text-gray-600 mt-1">
-                  Stay organized and get things done
-                </p>
-              </div>
-              
-              {/* Real-time Connection Status */}
-              <div className="flex items-center gap-2 text-sm">
-                <div className={`
-                  w-2 h-2 rounded-full 
-                  ${isRealtimeConnected 
-                    ? 'bg-green-500 animate-pulse' 
-                    : 'bg-gray-400'
-                  }
-                `}></div>
-                <span className={`
-                  ${isRealtimeConnected 
-                    ? 'text-green-700' 
-                    : 'text-gray-500'
-                  }
-                `}>
-                  {isRealtimeConnected ? 'Live' : 'Offline'}
-                </span>
-              </div>
+      <Layout title="Your To Do" showHeader={true} showUserInfo={true}>
+        {/* Main Container - Reference Design Match */}
+        <div className="min-h-screen bg-gray-50 py-8 px-4">
+          <div className="max-w-2xl mx-auto">
+            
+            {/* Header Title - Reference Design */}
+            <div className="text-center mb-8">
+              <h1 className="text-4xl sm:text-5xl font-bold text-gray-800 mb-2">
+                Your To Do
+              </h1>
             </div>
 
-            {/* Real-time Error Banner */}
-            {realtimeError && (
-              <div className="mb-4 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                <div className="flex items-center gap-2">
-                  <svg 
-                    className="h-4 w-4 text-yellow-600" 
-                    fill="currentColor" 
-                    viewBox="0 0 20 20"
-                    aria-hidden="true"
-                  >
-                    <path 
-                      fillRule="evenodd" 
-                      d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" 
-                      clipRule="evenodd" 
-                    />
-                  </svg>
-                  <p className="text-sm text-yellow-800">
-                    Real-time sync unavailable: {realtimeError}
+            {/* Network Status Indicator */}
+            {(!isOnline || realtimeError) && (
+              <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-2xl p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                  <div>
+                    <p className="text-sm text-yellow-800 font-medium">
+                      {!isOnline ? 'You\'re offline' : 'Connection issue'}
+                    </p>
+                    <p className="text-xs text-yellow-700 mt-1">
+                      {!isOnline 
+                        ? 'Changes will sync when reconnected'
+                        : 'Real-time sync temporarily unavailable'
+                      }
+                    </p>
+                    {isReconnecting && (
+                      <p className="text-xs text-yellow-700 mt-1">
+                        Attempting to reconnect...
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Slow Connection Warning */}
+            {isOnline && isSlowConnection && (
+              <div className="mb-6 bg-blue-50 border border-blue-200 rounded-2xl p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                  <p className="text-sm text-blue-800">
+                    Slow connection detected. Some features may be delayed.
                   </p>
                 </div>
               </div>
             )}
-          </div>
 
-          {/* Add Todo Form */}
-          <div className="mb-8">
-            <TodoForm 
-              onAddTodo={addTodo}
+            {/* Add Todo Form - Reference Design */}
+            <div className="mb-6">
+              <TodoForm 
+                onAddTodo={addTodo}
+                isLoading={isLoading}
+              />
+            </div>
+
+            {/* Todos List - Reference Design */}
+            <TodoList
+              todos={todos}
               isLoading={isLoading}
+              error={error}
+              onToggleTodo={handleToggleTodo}
+              onDeleteTodo={handleDeleteTodo}
             />
-          </div>
 
-          {/* Todos List */}
-          <TodoList
-            todos={todos}
-            isLoading={isLoading}
-            error={error}
-            onToggleTodo={handleToggleTodo}
-            onDeleteTodo={handleDeleteTodo}
-          />
-
-          {/* Retry Button for Errors */}
-          {error && todos.length === 0 && (
-            <div className="mt-6 text-center">
-              <button
-                onClick={handleRetry}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Try Again
-              </button>
-            </div>
-          )}
-
-          {/* Footer Stats */}
-          {todos.length > 0 && (
-            <div className="mt-8 pt-6 border-t border-gray-200">
-              <div className="text-center text-sm text-gray-500 space-y-1">
-                <p>
-                  {todos.filter(t => !t.completed).length} active, {' '}
-                  {todos.filter(t => t.completed).length} completed
-                </p>
-                <p className="text-xs">
-                  Synced across all your devices • {isRealtimeConnected ? 'Real-time' : 'Offline mode'}
-                </p>
+            {/* Error Retry */}
+            {error && todos.length === 0 && (
+              <div className="mt-8 text-center">
+                <button
+                  onClick={handleRetry}
+                  className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                >
+                  Try Again
+                </button>
               </div>
-            </div>
-          )}
+            )}
+
+          </div>
         </div>
+
+        {/* Toast Notifications */}
+        <ToastContainer 
+          toasts={toasts} 
+          onClose={removeToast}
+          position="top-right"
+        />
       </Layout>
     </ProtectedRoute>
   )

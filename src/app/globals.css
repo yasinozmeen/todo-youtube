@@ -6,6 +6,22 @@
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
+    
+    /* Production UI Color Palette */
+    --color-primary: #3b82f6;      /* Blue-500 for buttons */
+    --color-success: #10b981;      /* Green-500 for completed */
+    --color-error: #ef4444;        /* Red-500 for errors */
+    --color-warning: #f59e0b;      /* Amber-500 for warnings */
+    --color-text: #1f2937;         /* Gray-800 for text */
+    --color-text-muted: #6b7280;   /* Gray-500 for muted */
+    --color-background: #ffffff;   /* White background */
+    --color-border: #e5e7eb;       /* Gray-200 for borders */
+    
+    /* Responsive Breakpoints */
+    --breakpoint-sm: 375px;   /* Mobile */
+    --breakpoint-md: 768px;   /* Tablet */
+    --breakpoint-lg: 1024px;  /* Desktop */
+    --breakpoint-xl: 1440px;  /* Large Desktop */
   }
 
   @media (prefers-color-scheme: dark) {
@@ -148,4 +164,82 @@
 
 .delete-btn-hover:active {
   transform: scale(0.95);
+}
+
+/* Production UI Responsive Container */
+@layer components {
+  .container-todo {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .container-todo {
+      padding: 0 2rem;
+    }
+  }
+}
+
+/* Performance Optimizations */
+@layer utilities {
+  /* Smooth animations with reduced motion support */
+  .transition-fast { 
+    transition: all 0.15s ease;
+  }
+  
+  .transition-normal { 
+    transition: all 0.2s ease;
+  }
+  
+  .transition-slow { 
+    transition: all 0.3s ease;
+  }
+
+  /* Fade in animation */
+  .fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { 
+      opacity: 0; 
+      transform: translateY(10px); 
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+  }
+
+  /* Respect user preferences for reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .transition-fast,
+    .transition-normal,
+    .transition-slow {
+      transition: none;
+    }
+    
+    .fade-in {
+      animation: none;
+    }
+    
+    .animate-spin,
+    .animate-pulse {
+      animation: none;
+    }
+  }
+}
+
+/* Typography Scale */
+.text-h1 { font-size: 2rem; font-weight: 700; }      /* Header */
+.text-h2 { font-size: 1.5rem; font-weight: 600; }    /* Subheaders */
+.text-body { font-size: 1rem; font-weight: 400; }     /* Body text */
+.text-sm { font-size: 0.875rem; font-weight: 400; }   /* Small text */
+
+/* Focus visible for better accessibility */
+.focus-visible\:ring-2:focus-visible {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--color-primary);
 }

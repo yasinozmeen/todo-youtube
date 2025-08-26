@@ -2,6 +2,7 @@
 
 import { memo } from 'react'
 import type { OptimisticTodo } from '@/types/todo'
+import SkeletonLoader from '@/components/UI/SkeletonLoader'
 
 interface TodoListProps {
   todos: OptimisticTodo[]
@@ -30,11 +31,12 @@ const TodoItem = memo(({
   return (
     <div 
       className={`
-        todo-item group flex items-center gap-3 p-4 bg-white rounded-lg border border-gray-200
-        transition-all duration-200 ease-in-out
-        hover:border-gray-300 hover:shadow-sm
+        todo-item group flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-200
+        transition-all duration-300 ease-in-out
+        hover:border-gray-300 hover:shadow-md
         ${isOptimistic ? 'opacity-70' : ''}
         ${isLoading ? 'animate-pulse' : ''}
+        mb-3
       `}
     >
       {/* Checkbox */}
@@ -48,14 +50,14 @@ const TodoItem = memo(({
         }}
         disabled={isLoading}
         className={`
-          flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center
+          flex-shrink-0 w-6 h-6 rounded-md border-2 flex items-center justify-center
           transition-all duration-300 ease-in-out transform
-          focus:outline-none focus:ring-2 focus:ring-blue-500/20
+          focus:outline-none focus:ring-2 focus:ring-green-500/20
           disabled:opacity-50 disabled:cursor-not-allowed
           hover:scale-105 active:scale-95
           ${todo.completed
             ? 'bg-green-500 border-green-500 hover:bg-green-600 shadow-sm'
-            : 'border-gray-300 hover:border-green-500 hover:shadow-sm'
+            : 'border-gray-400 hover:border-green-500 hover:shadow-sm bg-white'
           }
         `}
         aria-label={todo.completed ? 'Mark as incomplete' : 'Mark as complete'}
@@ -85,10 +87,10 @@ const TodoItem = memo(({
       <div className="flex-1 min-w-0">
         <p 
           className={`
-            text-sm sm:text-base break-words transition-all duration-300 ease-in-out
+            text-base sm:text-lg break-words transition-all duration-300 ease-in-out font-medium
             ${todo.completed 
-              ? 'text-gray-500 line-through opacity-75 transform scale-98' 
-              : 'text-gray-900 opacity-100 transform scale-100'
+              ? 'text-gray-400 line-through opacity-75' 
+              : 'text-gray-700 opacity-100'
             }
           `}
         >
@@ -122,12 +124,12 @@ const TodoItem = memo(({
           }}
           disabled={isLoading}
           className={`
-            flex-shrink-0 min-w-[44px] min-h-[44px] p-2.5 rounded-md text-gray-400
+            flex-shrink-0 w-8 h-8 rounded-md text-gray-400
             flex items-center justify-center transition-all duration-200
             opacity-0 group-hover:opacity-100 
-            hover:text-red-500 hover:bg-red-50 hover:scale-105
-            focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:opacity-100
-            active:scale-95 active:bg-red-100
+            hover:text-gray-600 hover:bg-gray-100 hover:scale-110
+            focus:outline-none focus:ring-2 focus:ring-gray-400/20 focus:opacity-100
+            active:scale-95 active:bg-gray-200
             disabled:opacity-30 disabled:cursor-not-allowed disabled:transform-none
             sm:opacity-0 sm:group-hover:opacity-100 opacity-100
           `}
@@ -136,17 +138,17 @@ const TodoItem = memo(({
           tabIndex={0}
         >
           <svg 
-            className="w-5 h-5 sm:w-4 sm:h-4" 
+            className="w-5 h-5" 
             fill="none" 
             stroke="currentColor" 
             viewBox="0 0 24 24"
+            strokeWidth={2}
             aria-hidden="true"
           >
             <path 
               strokeLinecap="round" 
               strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" 
+              d="M6 18L18 6M6 6l12 12" 
             />
           </svg>
         </button>
@@ -178,18 +180,8 @@ export default function TodoList({
   // Loading state
   if (isLoading && todos.length === 0) {
     return (
-      <div className={`space-y-3 ${className}`}>
-        {Array.from({ length: 3 }).map((_, index) => (
-          <div 
-            key={index}
-            className="animate-pulse flex items-center gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200"
-          >
-            <div className="w-5 h-5 bg-gray-300 rounded"></div>
-            <div className="flex-1 space-y-2">
-              <div className="h-4 bg-gray-300 rounded w-3/4"></div>
-            </div>
-          </div>
-        ))}
+      <div className={`${className}`}>
+        <SkeletonLoader variant="todo" count={3} />
       </div>
     )
   }
