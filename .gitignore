@@ -59,6 +59,3 @@ coverage/
 # Parcel-bundler cache
 .cache
 .parcel-cache
-
-# Claude
-.claude/

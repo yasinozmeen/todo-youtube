@@ -67,13 +67,8 @@ src/
 - `npm run type-check` - TypeScript kontrolü
 
 ## Test Kullanıcıları
-### User 1
-- Email: yasin.test@gmail.com
-- Şifre: 12345678
-
-### User 2  
-- Email: yasin.test2@gmail.com
-- Şifre: 12345678
+- Test kullanıcıları için kendi Supabase projenizde hesap oluşturun
+- Production'da gerçek kullanıcı bilgilerini paylaşmayın
 
 ## -
 - Storyleri güncel tut, Storylerde tasklari ilerlettikçe gerekli story güncellemelerini yap.

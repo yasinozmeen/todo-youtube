@@ -1,0 +1,62 @@
+{
+  "mcp": {
+    "enabled": true,
+    "servers": {}
+  },
+  "tools": {
+    "enabled": ["bash", "read", "write", "edit", "grep", "glob", "ls", "web_search", "web_fetch"],
+    "bash": {
+      "timeout": 120000,
+      "working_directory": "/Users/yasin/todo-youtube"
+    }
+  },
+  "ui": {
+    "theme": "dark",
+    "editor": {
+      "font_size": 14,
+      "tab_size": 2,
+      "insert_spaces": true
+    }
+  },
+  "project": {
+    "name": "todo-youtube",
+    "type": "web-application",
+    "framework": "nextjs",
+    "language": "typescript",
+    "package_manager": "npm",
+    "build_command": "npm run build",
+    "dev_command": "npm run dev",
+    "test_command": "npm run test",
+    "lint_command": "npm run lint",
+    "type_check_command": "npm run type-check"
+  },
+  "development": {
+    "auto_save": true,
+    "hot_reload": true,
+    "source_maps": true,
+    "format_on_save": true,
+    "lint_on_save": true
+  },
+  "git": {
+    "auto_stage": false,
+    "commit_template": "feat|fix|docs|style|refactor|test|chore: ",
+    "branch_naming": "feature/|bugfix/|hotfix/"
+  },
+  "environment": {
+    "NODE_ENV": "development",
+    "PORT": "3000"
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "terminal-notifier -title 'Claude Code' -message 'Cevap hazır!' -activate 'com.todesktop.230313mzl4w4u92' -sound 'default'"
+          }
+        ]
+      }
+    ]
+  }
+}
